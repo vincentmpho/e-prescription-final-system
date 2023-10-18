@@ -1,0 +1,268 @@
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+export default function AddPatient() {
+    let router = useRouter();
+    const [DoctorNumber, setDoctorNumber] = useState(null);
+    const [DoctorName, setDoctorName] = useState(null);
+    const [DoctorSurname, setDoctorSurname] = useState(null);
+    const [DoctorContact, setDoctorContact] = useState(null);
+    const [DoctorEmail, setDoctorEmail] = useState(null);
+    const [DoctorQualification, setDoctorQualification] = useState(null);
+    const [DoctorPracticeNumber, setDoctorPracticeNumber] = useState(null);
+    const [DoctorHCRN, setDoctorHCRN] = useState(null);
+
+    let validateEmail = (mail) => {
+        const res = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return res.test(String(mail).toLowerCase());
+    }
+
+    let displayError = (id) => {
+        let input = document.getElementById(`${id}`);
+        let error_div = document.getElementById(`${id}_error`);
+        error_div.style.display = "block";
+        input.style.borderColor = "red";
+        if (!input.className.includes("is-invalid")) {
+            input.classList.add("is-invalid");
+        }
+    }
+
+    let removeError = (id) => {
+        let input = document.getElementById(`${id}`);
+        let error_div = document.getElementById(`${id}_error`);
+        error_div.style.display = "none";
+        // input.style.borderColor = "#ced4da";
+        input.style.borderColor = "green";
+        if (input.className.includes("is-invalid")) {
+            input.classList.remove("is-invalid");
+        }
+    }
+
+    let handleData = () => {
+        let errors = 0;
+        if (!DoctorNumber || DoctorNumber.length !== 8) {
+            displayError("number");
+            errors += 1;
+        } else {
+            removeError("number");
+        }
+
+        if (!DoctorName) {
+            displayError("name");
+            errors += 1;
+        } else {
+            removeError("name");
+        }
+
+        if (!DoctorSurname) {
+            displayError("surname");
+            errors += 1;
+        } else {
+            removeError("surname");
+        }
+
+        if (!validateEmail(DoctorEmail)) {
+            displayError("email");
+            errors += 1;
+        } else {
+            removeError("email");
+        }
+
+        if ((DoctorContact[0] !== "0") || (DoctorContact.length !== 10)) {
+            displayError("contact");
+            errors += 1;
+        } else {
+            removeError("contact");
+        }
+
+        if (DoctorPracticeNumber.length !== 6) {
+            displayError("practice");
+            errors += 1;
+        } else {
+            removeError("practice");
+        }
+
+        if (DoctorQualification.length <= 3) {
+            displayError("qualification");
+            errors += 1;
+        } else {
+            removeError("qualification");
+        }
+
+        if (DoctorHCRN.length !== 5) {
+            displayError("hcrn");
+            errors += 1;
+        } else {
+            removeError("hcrn");
+        }
+
+
+        if (errors === 0) {
+            fetch("https://localhost:44345/api/Doctors")
+                .then(res => res.json())
+                .then(res => {
+                    let exists = false;
+                    for (let i = 0; i < res.length; i++) {
+                        if (DoctorNumber === res[i].doctorNumber) {
+                            alert("The doctor number you have entered already exists!!!!");
+                            exists = true;
+                        }
+                    }
+                    if (!exists) {
+                        fetch('https://localhost:44345/api/Doctors', {
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                "doctorNumber": DoctorNumber + "",
+                                "doctorName": DoctorName + "",
+                                "doctorSurname": DoctorSurname + "",
+                                "doctorContact": DoctorContact + "",
+                                "doctorEmail": DoctorEmail + "",
+                                "doctorQualification": DoctorQualification + "",
+                                "doctorPracticeNumber": Number(DoctorPracticeNumber),
+                                "doctorHCRN": Number(DoctorHCRN)
+                            })
+                        })
+                            .then(res => res.json)
+                            .then(res => {
+                                console.log("Result:", res);
+                                alert("Success", "Registration complete");
+                                router.push("/Dashboard/DoctorDashboard");
+                            })
+                            .catch(err => {
+                                console.log("Error result:", err);
+                                alert(err);
+                            });
+                    }
+                })
+                .catch(err => alert("Error fetching data from api", err))
+
+
+
+
+        }
+
+    }
+
+    useEffect(() => {
+        setDoctorEmail(JSON.parse(window.localStorage.getItem('user')).email)
+        console.log("user:", JSON.parse(window.localStorage.getItem('user')));
+        document.getElementById("email").value = JSON.parse(window.localStorage.getItem('user')).email;
+    }, [])
+
+    return (
+        <div className="container">
+            <div className="signin-form">
+                <div className="form-group">
+                    <label className="control-label" htmlFor="name">Doctor Number</label>
+                    <input
+                        className="form-control"
+                        type="number"
+                        required
+                        id='number' name='name'
+                        onChange={e => setDoctorNumber(e.target.value)}
+                    />
+                    <div id="number_error" className="invalid-feedback">
+                        Please enter a valid 8 digit number!!!
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label className="control-label" htmlFor="name">Name</label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        id='name' name='name'
+                        onChange={e => setDoctorName(e.target.value)}
+                    />
+                    <div id="name_error" className="invalid-feedback">
+                        Please enter a valid name.
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label className="control-label">Surname</label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        id='surname' name='surname'
+                        onChange={e => setDoctorSurname(e.target.value)}
+                    />
+                    <div id="surname_error" className="invalid-feedback">
+                        Please enter a valid surname.
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="contact" className="control-label">Contact Number</label>
+                    <input
+                        className="form-control"
+                        type="number"
+                        id='contact' name='contact'
+                        onChange={e => setDoctorContact(e.target.value)}
+                    />
+                    <div id="contact_error" className="invalid-feedback">
+                        Please enter a valid 10 digit contact number that starts with 0.
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label asp-for="email" className="control-label">Email</label>
+                    <input
+                        className="form-control"
+                        type="email"
+                        id='email' name='email'
+                        onChange={e => setDoctorEmail(e.target.value)}
+                    />
+                    <div id="email_error" className="invalid-feedback">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label className="control-label">Qualification</label>
+                    <input
+                        className="form-control"
+                        required
+                        id='qualification' name='qualification'
+                        onChange={e => setDoctorQualification(e.target.value)}
+                    />
+                    <div id="qualification_error" className="invalid-feedback">
+                        Please enter a valid qualification.
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label className="control-label">Practice Number</label>
+                    <input
+                        className="form-control"
+                        type="number"
+                        required
+                        id='practice' name='practice'
+                        onChange={e => setDoctorPracticeNumber(e.target.value)}
+                    />
+                    <div id="practice_error" className="invalid-feedback">
+                        Please enter a valid 6 digit practice number.
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label className="control-label">Health Council Registration Number</label>
+                    <input
+                        className="form-control"
+                        required
+                        id='hcrn' name='hcrn'
+                        onChange={e => setDoctorHCRN(e.target.value)}
+                    />
+                    <div id="hcrn_error" className="invalid-feedback">
+                        Please enter a valid 5 digit Health Council Registration Number.
+                    </div>
+                </div>
+
+                <div className="form-group my-3">
+                    <span className="btn btn-primary" onClick={handleData}>UPDATE</span>
+                </div>
+            </div>
+        </div>
+    )
+}

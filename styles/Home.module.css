@@ -1,0 +1,21 @@
+.body_main {
+  width: 100%;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+
+.title {
+  width: 100%;
+  font-weight: bold;
+  height: 300px;
+  color: #fff;
+  opacity: 0.2;
+  font-size: 50px;
+  background-color: #000;
+}
+
+.bg_img {
+  background-image: url('../assets/bg.jpg');
+  font-family: calibri;
+  height: 75%;
+}

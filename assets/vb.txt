@@ -1,0 +1,123 @@
+Module MainModule:
+	//classes declarations
+	Class Blanket:
+    	Declare blanketlength as double
+    	Declare blanketwidth as double
+    	Declare blanketdescription as Description
+    
+    	Sub New(l, w, d):  // constructor
+    		Initialize blanketlength to l
+    		Initialize blanketwidth to w
+    		Initialize blanketdescription to d
+    	End sub
+    
+    	Sub New():):  // constructor
+    		Initialize blanketlength to 0
+    		Initialize blanketwidth to 0
+    		Initialize blanketdescription to new Descrition(“”, “”, “”)
+    	End sub
+    
+    
+    	Sub getLength:
+    		Return blanketlength
+    	End sub
+    	
+    	Sub getWidth:
+    		Return blanketwidth
+    	End sub
+    
+    	Sub getSize:
+    		Return blanketwidth * blanketlength
+    	End sub
+    	
+    	Sub getPerimeter:
+    		Return (blanketwidth + blanketlength) * 2
+    	End sub
+    
+    	Sub getDescription:
+    		Call the display method of the Description class
+    	End sub
+    End Class
+    	
+    
+    Class Description:
+    	Declare blanketcolor
+    	Declare blankettexture
+    	Declare blanketfabric
+    
+    	Sub New(color, texture, fabric): ):  // constructor
+    		Initialize blanketcolor to color
+    		Initialize blankettexture to texture
+    		Initialize blanketfabric to fabric
+    	end sub
+    
+    	Sub New():):  // constructor
+    		Initialize blanketcolor to an empty string
+    		Initialize blankettexture to an empty string
+    		Initialize blanketfabric to an empty string
+    	End sub
+    
+    	
+    	Sub getColor():
+    		Return blanketcolor
+    	End sub
+    
+    	Sub getTexture():
+    		Return blankettexture
+    	End sub
+    
+    	Sub getFabric():
+    		Return blanketfabric
+    	End sub
+    
+    	Sub setColor(color):
+    		Blanketcolor = color
+    	End sub
+    
+    	Sub setTexture(texture):
+    		Blankettexture = texture
+    	End sub
+    
+    	Sub setFabric(fabric):
+    		Blanketfabric = fabric
+    	End sub
+    End Class
+
+	// end of classes declarations
+
+
+	Declare public numBlankets variable of type integer to store number of blankets to distribute
+    Declare public blanketsLeft variable of type integer to store number of blankets left
+	Sub Main:
+		Declare counter as interger and initialize it to 0
+		Ask user how many blankets to distribute and store value to numBlankets
+		Declare Blankets array of type Blanket of size numBlankets
+		While counter is less than numBlankets:
+			Ask user for blanket color and store in new variable called bcolor
+			Ask user for blanket texture and store in new variable called btecture
+			Ask user for blanket fabric and store in new variable called bfabric
+			Ask user for blanket length and store in new variable called blength
+		Ask user for blanket width and store in new variable called bwidth
+		create a new blanket object with the above inputs and name it newblanket
+		add newblanket to Blankets array
+	end while
+		
+    Sub Distribute():
+        If there is only one blanket left:
+        	Print warning to user
+        Else:
+			Distribute blanket 
+            Subtract 1 from blanketsLeft
+		End if
+	End sub
+
+	Sub Display():
+		****************************************************************
+		Blank drive: Date
+        ------------------------------------------------------------------
+        No. of blankets available for distribution:                      x
+        no. of blankets distributed:                                     x
+                                                                   -------
+        blankets left for next drive:                                    x
+        ***************************************************************
+End module
